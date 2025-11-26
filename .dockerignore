@@ -1,0 +1,21 @@
+# Dependências locais
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Build local
+dist
+.cache
+coverage
+
+# Configurações de editor/IDE
+.vscode
+.idea
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
