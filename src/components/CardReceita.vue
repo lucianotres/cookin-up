@@ -1,7 +1,7 @@
 <template>
   <article class="receita">
     <header class="receita__cabecalho">
-      <img class="receita__imagem" :src="`/imagens/receitas/${receita.imagem}`" :alt="`Foto de ${receita.nome}`" />
+      <img class="receita__imagem" :src="`imagens/receitas/${receita.imagem}`" :alt="`Foto de ${receita.nome}`" />
     </header>
 
     <section class="receita_corpo">
