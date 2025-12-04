@@ -33,8 +33,8 @@ jobs:
       # Stop workflow if VERSION does not match version pattern
       - name: Stop workflow if VERSION does not match version pattern
         run: |
-          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "VERSION is not a valid version string (x.x.x.x). Stopping workflow."
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "VERSION is not a valid version string (x.x.x). Stopping workflow."
             exit 1
           fi
         shell: bash
