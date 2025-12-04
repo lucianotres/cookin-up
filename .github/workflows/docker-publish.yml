@@ -3,7 +3,7 @@ name: Cria e publica uma imagem Docker para este frontend do Cookin' Up
 on:
   push:
     tags:
-      - "v*.*.*.*"
+      - "v*.*.*"
 
 env:
   REGISTRY: ghcr.io
