@@ -1,6 +1,7 @@
 # Etapa 1: Build
 FROM node:18-alpine AS build-stage
 
+ARG VERSION=0.0.1
 WORKDIR /app
 
 # Copia package.json e instala dependências
@@ -9,6 +10,8 @@ RUN npm install
 
 # Copia o restante do código e compila
 COPY . .
+RUN npm version ${VERSION} --no-git-tag-version
+ENV VITE_APP_VERSION=${VERSION}
 RUN npm run build
 
 # Etapa 2: Produção

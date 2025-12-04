@@ -1,8 +1,13 @@
 <template>
   <footer class="rodape paragrafo">
-    Desenvolvido por Alura | 2023 - Projeto fictício sem fins comerciais.
+    Desenvolvido por LTres | 2025 - Projeto fictício sem fins comerciais.&nbsp;&nbsp;
+    Versão:&nbsp;<strong>{{ version }}</strong>
   </footer>
 </template>
+
+<script setup lang="ts">
+const version = import.meta.env.VITE_APP_VERSION;
+</script>
 
 <style scoped>
 .rodape {
