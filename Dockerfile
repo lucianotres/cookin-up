@@ -12,6 +12,8 @@ RUN npm install
 COPY . .
 RUN npm version ${VERSION} --no-git-tag-version
 ENV VITE_APP_VERSION=${VERSION}
+
+ENV VITE_API_BASE_URL=/api/
 RUN npm run build
 
 # Etapa 2: Produção
