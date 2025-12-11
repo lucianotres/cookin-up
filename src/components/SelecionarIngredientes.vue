@@ -1,12 +1,19 @@
 <template>
-    <section>
+    <section v-if="categoriaStore.carregando" class="selecionar-ingredientes">
+        <p>Carregando lista de ingredientes...</p>
+    </section>
+    <section v-else-if="categoriaStore.falhaAoCarregar" class="selecionar-ingredientes">
+        <p>Falha ao carregar lista de ingredientes. Tente novamente mais tarde.</p>
+        <p>{{ categoriaStore.erroAoCarregar }}</p>
+    </section>
+    <section v-else class="selecionar-ingredientes">
         <h1 class="cabecalho titulo-ingredientes">Ingredientes</h1>
         <p class="paragrafo-lg instrucoes">
             Selecione abaixo os ingredientes que você quer usar nesta receita:
         </p>
 
         <ul class="categorias">
-            <li v-for="categoria in categorias" :key="categoria.nome">
+            <li v-for="categoria in categoriaStore.listaCategorias" :key="categoria.nome">
                 <CardCategoria
                  :categoria="categoria"
                  @adicionarIngrediente="$emit('adicionarIngrediente', $event)"
@@ -23,30 +30,23 @@
     </section>
 </template>
 
-<script lang="ts">
-import { obterCategorias } from '@/http/index';
-import type ICategorias from '@/interfaces/ICategorias';
+<script setup lang="ts">
 import CardCategoria from './CardCategoria.vue';
 import BotaoPrincipal from './BotaoPrincipal.vue';
+import { defineComponent, onMounted } from 'vue';
+import { useCategoriasStore } from '@/store/categorias';
 
-export default {
-    name: 'SelecionarIngredientes',
+const categoriaStore = useCategoriasStore();
 
-    components: { CardCategoria, BotaoPrincipal },
+defineComponent({
+  name: 'SelecionarIngredientes',
+  components: { CardCategoria, BotaoPrincipal }
+});
+defineEmits(['adicionarIngrediente', 'removerIngrediente', 'buscarReceitas']);
 
-    data() {
-        return {
-            categorias: [] as ICategorias[]
-        }
-    },
-
-    emits: ['adicionarIngrediente', 'removerIngrediente', 'buscarReceitas'],
-
-    async created() {
-      this.categorias = await obterCategorias();
-      console.log(this.categorias);
-    }
-}
+onMounted(() => {
+  categoriaStore.fetchCategorias();
+})
 </script>
 
 <style scoped>
