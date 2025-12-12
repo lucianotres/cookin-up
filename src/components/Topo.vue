@@ -1,15 +1,19 @@
 <template>
   <nav class="menu">
-    <a>Login <FontAwesomeIcon :icon="faRightToBracket" /></a>
+    <TopoLogin />
   </nav>
 </template>
 
 <script setup lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faRightToBracket } from '@fortawesome/free-solid-svg-icons';
+import { defineComponent } from 'vue';
+import TopoLogin from './TopoLogin.vue';
+
+defineComponent({
+  components: { TopoLogin },
+})
 </script>
 
-<style lang="css" scoped>
+<style lang="css">
   .menu {
     display: flex;
     flex-flow: column;
@@ -22,8 +26,10 @@ import { faRightToBracket } from '@fortawesome/free-solid-svg-icons';
   .menu a {
     cursor: pointer;
     user-select: none;
+    color: white;
+    text-decoration: none;
   }
-  .menu a:last-child {
+  .menu > *:last-child {
     margin-right: 1em;
   }
 </style>
