@@ -4,6 +4,7 @@ import CallbackView from '@/views/login/CallbackView.vue'
 import SeguroView from '@/views/SeguroView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import CategoriasView from '@/views/CategoriasView.vue'
+import NotFoundView from '@/views/NotFoundView.vue'
 
 const routes = [
   { path: '/', component: HomeView },
@@ -19,8 +20,8 @@ const routes = [
     name: 'Categorias',
     component: CategoriasView,
     meta: { requiresAuth: true },
-  }
-
+  },
+  {path: '/:pathMatch(.*)*', component: NotFoundView }
 ]
 
 const router = createRouter({

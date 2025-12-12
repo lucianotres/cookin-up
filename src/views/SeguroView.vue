@@ -1,16 +1,18 @@
 <template>
-  <section>
-    <h4>Área Administrativa</h4>
-    <p>Bem-vindo {{ usuarioNome }} à área segura do aplicativo!</p>
+  <main class="conteudo-principal">
+    <section>
+      <h4>Área Administrativa</h4>
+      <p>Bem-vindo {{ usuarioNome }} à área segura do aplicativo!</p>
 
-    <q-card class="card" dark>
-      <q-card-section>
-        Está é a área de cadastros do aplicativo Cookin' Up. Aqui você pode gerenciar as categorias, ingredientes e receitas que irão aparecer no app.
-      </q-card-section>
-    </q-card>
+      <q-card class="card" dark>
+        <q-card-section>
+          Está é a área de cadastros do aplicativo Cookin' Up. Aqui você pode gerenciar as categorias, ingredientes e receitas que irão aparecer no app.
+        </q-card-section>
+      </q-card>
 
-    <MenuCadastroOpcoes :ver-horizontal="true" style="justify-content: center;" />
-  </section>
+      <MenuCadastroOpcoes :ver-horizontal="true" style="justify-content: center;" />
+    </section>
+  </main>
 </template>
 
 <script setup lang="ts">
