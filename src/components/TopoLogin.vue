@@ -4,9 +4,9 @@
       <span>Olá, {{ usuario.profile.name }}!</span>
       <span>{{ usuario.profile.email }}</span>
     </div>
-    <button @click="sair">Sair <FontAwesomeIcon :icon="faRightToBracket" /></button>
+    <button @click="sair">Sair <q-icon :name="evaLogOut" size="sm" /></button>
   </div>
-  <RouterLink v-else to="/seguro">Login <FontAwesomeIcon :icon="faRightToBracket" /></RouterLink>
+  <RouterLink v-else to="/seguro">Login <q-icon :name="evaLogIn" size="sm" /></RouterLink>
 </template>
 
 <style lang="css" scoped>
@@ -38,11 +38,10 @@ div.usuario span:last-child {
 
 <script setup lang="ts">
 import { userManager } from '@/auth';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faRightToBracket } from '@fortawesome/free-solid-svg-icons';
 import { onMounted, ref } from 'vue';
 import type { User } from 'oidc-client-ts';
 import { useRouter } from 'vue-router';
+import { evaLogIn, evaLogOut } from '@quasar/extras/eva-icons';
 
 const usuario = ref<User | null>(null);
 const router = useRouter();
