@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-const version = import.meta.env.VITE_APP_VERSION;
+const version = import.meta.env.VITE_APP_VERSION || '(dev)';
 </script>
 
 <style scoped>
