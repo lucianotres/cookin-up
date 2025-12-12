@@ -4,35 +4,32 @@
   </button>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { defineComponent, ref } from 'vue';
 import Tag from './Tag.vue';
 
-export default {
-    components: { Tag },
+defineComponent({
+  name: 'IngredienteSelecionavel',
+  components: { Tag }
+});
 
-    props: {
-        ingrediente: { type: String, required: true }
-    },
+const props = defineProps({
+    ingrediente: { type: String, required: true },
+    iniciaSelecionado: { type: Boolean, default: false }
+});
 
-    data() {
-      return {
-        selecionado: false
-      }
-    },
+const emit = defineEmits(['update:selecionado', 'adicionarIngrediente', 'removerIngrediente']);
 
-    methods: {
-      aoClicar() {
-        this.selecionado = !this.selecionado;
+const selecionado = ref(props.iniciaSelecionado);
 
-        if (this.selecionado) {
-          this.$emit('adicionarIngrediente', this.ingrediente);
-        } else {
-          this.$emit('removerIngrediente', this.ingrediente);
-        }
-      }
-    },
+function aoClicar() {
+    selecionado.value = !selecionado.value;
 
-    emits: ['adicionarIngrediente', 'removerIngrediente']
+    if (selecionado.value) {
+      emit('adicionarIngrediente', props.ingrediente);
+    } else {
+      emit('removerIngrediente', props.ingrediente);
+    }
 }
 </script>
 

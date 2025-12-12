@@ -4,8 +4,8 @@
         Sua lista:
     </span>
 
-    <ul v-if="ingredientes.length" class="ingredientes-sua-lista">
-        <li v-for="ingrediente in ingredientes" :key="ingrediente">
+    <ul v-if="receitasStore.filtroIngredientes.length" class="ingredientes-sua-lista">
+        <li v-for="ingrediente in receitasStore.filtroIngredientes" :key="ingrediente">
             <Tag :texto="ingrediente" ativa />
         </li>
     </ul>
@@ -17,17 +17,17 @@
 </section>
 </template>
 
-<script lang="ts">
-import type { PropType } from 'vue';
+<script setup lang="ts">
+import { defineComponent, type PropType } from 'vue';
 import Tag from './Tag.vue';
+import { useReceitasStore } from '@/store/receitas';
 
-export default {
-    components: { Tag },
+const receitasStore = useReceitasStore();
 
-    props: {
-        ingredientes: { type: Array as PropType<string[]>, required: true }
-    }
-}
+defineComponent({
+  name: 'SuaLista',
+  components: { Tag }
+});
 </script>
 
 <style scoped>

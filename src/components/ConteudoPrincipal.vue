@@ -1,21 +1,16 @@
 <template>
     <main class="conteudo-principal">
-        <SuaLista :ingredientes="ingredientes" />
+        <SuaLista />
 
-        <KeepAlive include="SelecionarIngredientes">
-            <SelecionarIngredientes
-              v-if="conteudo === 'SelecionarIngredientes'"
-              @adicionarIngrediente="adicionarIngrediente"
-              @removerIngrediente="removerIngrediente"
-              @buscarReceitas="navegar('MostrarReceitas')"
-            />
+        <SelecionarIngredientes
+          v-if="conteudo === 'SelecionarIngredientes'"
+          @buscarReceitas="navegar('MostrarReceitas')"
+        />
 
-          <MostrarReceitas
-            v-else-if="conteudo === 'MostrarReceitas'"
-            :ingredientes="ingredientes"
-            @editarReceitas="navegar('SelecionarIngredientes')"
-          />
-       </KeepAlive>
+        <MostrarReceitas
+          v-else-if="conteudo === 'MostrarReceitas'"
+          @editarReceitas="navegar('SelecionarIngredientes')"
+        />
     </main>
 
 </template>
@@ -32,19 +27,10 @@ export default {
 
     data() {
         return {
-        ingredientes: [] as string[],
         conteudo: 'SelecionarIngredientes' as Pagina
     }},
 
     methods: {
-        adicionarIngrediente(ingrediente: string) {
-            this.ingredientes.push(ingrediente);
-        },
-
-        removerIngrediente(ingrediente: string) {
-            this.ingredientes = this.ingredientes.filter((item) => item !== ingrediente);
-        },
-
         navegar(pagina: Pagina)
         {
           this.conteudo = pagina;

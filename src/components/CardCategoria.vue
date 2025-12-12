@@ -9,29 +9,40 @@
             <li v-for="ingrediente in categoria.ingredientes" :key="ingrediente">
                 <IngredienteSelecionavel
                   :ingrediente="ingrediente"
-                  @adicionarIngrediente="$emit('adicionarIngrediente', $event)"
-                  @removerIngrediente="$emit('removerIngrediente', $event)"
+                  :iniciaSelecionado="receitasStore.ingredienteEstaNoFiltro(ingrediente)"
+                  @adicionarIngrediente="adicionarIngrediente"
+                  @removerIngrediente="removerIngrediente"
                 />
             </li>
         </ul>
     </article>
 </template>
 
-<script lang="ts">
-import type { PropType } from 'vue';
+<script setup lang="ts">
+import { defineComponent, type PropType } from 'vue';
 import type ICategoria from '@/interfaces/ICategorias';
 import Tag from './Tag.vue';
 import IngredienteSelecionavel from './IngredienteSelecionavel.vue';
+import { useReceitasStore } from '@/store/receitas';
 
-export default {
-    components: { Tag, IngredienteSelecionavel },
+const receitasStore = useReceitasStore();
 
-    props: {
-        categoria: { type: Object as PropType<ICategoria>, required: true }
-    },
+defineComponent({
+  name: 'CardCategoria',
+  components: { Tag, IngredienteSelecionavel }
+});
 
-    emits: ['adicionarIngrediente', 'removerIngrediente']
-}
+defineProps({
+    categoria: { type: Object as PropType<ICategoria>, required: true }
+});
+
+function adicionarIngrediente(ingrediente: string) {
+    receitasStore.adicionarIngrediente(ingrediente);
+};
+
+function removerIngrediente(ingrediente: string) {
+    receitasStore.removerIngrediente(ingrediente);
+};
 </script>
 
 <style scoped>

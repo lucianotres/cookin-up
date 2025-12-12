@@ -1,16 +1,23 @@
 <template>
-    <section class="mostrar-receitas">
+    <section v-if="receitasStore.carregandoReceitas" class="mostrar-receitas">
+      <p>Carregando receitas...</p>
+    </section>
+    <section v-else-if="receitasStore.falhaAoCarregarReceitas" class="mostrar-receitas">
+      <p>Falha ao carregar receitas. Tente novamente mais tarde.</p>
+      <p>{{ receitasStore.erroAoCarregarReceitas }}</p>
+    </section>
+    <section v-else class="mostrar-receitas">
         <h1 class="cabecalho titulo-receitas">Receitas</h1>
         <p class="paragrafo-lg resultados-encontrados">
-          Resultados encontrados {{ receitasEncontradas.length }}
+          Resultados encontrados {{ receitasStore.receitasFiltradas.length }}
         </p>
 
-        <div v-if="receitasEncontradas.length" class="receitas-wrapper">
+        <div v-if="receitasStore.receitasFiltradas.length" class="receitas-wrapper">
           <p class="paragrafo-lg informacoes">
             Veja as opções de receitas que encontramos com os ingredientes que você selecionou:
           </p>
           <ul class="receitas">
-              <li v-for="receita in receitasEncontradas" :key="receita.nome">
+              <li v-for="receita in receitasStore.receitasFiltradas" :key="receita.nome">
                   <CardReceita :receita="receita" />
               </li>
           </ul>
@@ -28,35 +35,24 @@
     </section>
 </template>
 
-<script lang="ts">
-import { obterReceitas } from '@/http';
+<script setup lang="ts">
 import BotaoPrincipal from './BotaoPrincipal.vue';
-import type IReceita from '@/interfaces/IReceita';
 import CardReceita from './CardReceita.vue';
-import type { PropType } from 'vue';
-import { intensDeLista1EstaoEmList2 } from '@/utils/listas';
+import { defineComponent, onMounted } from 'vue';
+import { useReceitasStore } from '@/store/receitas';
 
-export default {
-  components: { BotaoPrincipal, CardReceita },
+const receitasStore = useReceitasStore();
 
-  props: {
-    ingredientes: { type: Array as PropType<string[]>, required: true }
-  },
+defineComponent({
+  name: 'MostrarReceitas',
+  components: { BotaoPrincipal, CardReceita }
+});
+defineEmits(['editarReceitas']);
 
-  data() {
-    return {
-      receitasEncontradas: [] as IReceita[]
-    }
-  },
+onMounted(async () => {
+  receitasStore.fetchReceitas();
+});
 
-  async created() {
-    const receitas = await obterReceitas();
-
-    this.receitasEncontradas = receitas.filter((receita) => intensDeLista1EstaoEmList2(receita.ingredientes, this.ingredientes));
-  },
-
-  emits: ['editarReceitas'],
-}
 </script>
 
 <style scoped>

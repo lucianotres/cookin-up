@@ -16,8 +16,6 @@
             <li v-for="categoria in categoriaStore.listaCategorias" :key="categoria.nome">
                 <CardCategoria
                  :categoria="categoria"
-                 @adicionarIngrediente="$emit('adicionarIngrediente', $event)"
-                 @removerIngrediente="$emit('removerIngrediente', $event)"
                 />
             </li>
         </ul>
@@ -42,7 +40,7 @@ defineComponent({
   name: 'SelecionarIngredientes',
   components: { CardCategoria, BotaoPrincipal }
 });
-defineEmits(['adicionarIngrediente', 'removerIngrediente', 'buscarReceitas']);
+defineEmits(['buscarReceitas']);
 
 onMounted(() => {
   categoriaStore.fetchCategorias();
