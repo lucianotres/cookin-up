@@ -3,6 +3,7 @@ import HomeView from '@/views/HomeView.vue'
 import CallbackView from '@/views/login/CallbackView.vue'
 import SeguroView from '@/views/SeguroView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import CategoriasView from '@/views/CategoriasView.vue'
 
 const routes = [
   { path: '/', component: HomeView },
@@ -13,6 +14,12 @@ const routes = [
     component: SeguroView,
     meta: { requiresAuth: true },
   },
+  {
+    path: '/categorias',
+    name: 'Categorias',
+    component: CategoriasView,
+    meta: { requiresAuth: true },
+  }
 
 ]
 
