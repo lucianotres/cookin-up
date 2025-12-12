@@ -1,6 +1,9 @@
 <template>
   <div class="logado" v-if="usuario">
-    Olá, {{ usuario.profile.name }}!
+    <div class="usuario">
+      <span>Olá, {{ usuario.profile.name }}!</span>
+      <span>{{ usuario.profile.email }}</span>
+    </div>
     <button @click="sair">Sair <FontAwesomeIcon :icon="faRightToBracket" /></button>
   </div>
   <RouterLink v-else to="/seguro">Login <FontAwesomeIcon :icon="faRightToBracket" /></RouterLink>
@@ -18,6 +21,18 @@
   background: none;
   border: none;
   color: white;
+}
+div.usuario {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+}
+div.usuario span {
+  line-height: 1;
+}
+div.usuario span:last-child {
+  font-size: 0.85rem;
+  opacity: 0.8;
 }
 </style>
 
