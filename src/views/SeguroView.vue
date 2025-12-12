@@ -1,43 +1,35 @@
 <template>
   <section>
-    <h3>Acesso restrito</h3>
+    <h4>Área Administrativa</h4>
     <p>Bem-vindo {{ usuarioNome }} à área segura do aplicativo!</p>
 
-    <div>
-      TESTANDO
+    <q-card class="card" dark>
+      <q-card-section>
+        Está é a área de cadastros do aplicativo Cookin' Up. Aqui você pode gerenciar as categorias, ingredientes e receitas que irão aparecer no app.
+      </q-card-section>
+    </q-card>
 
-      <div v-for="categoria in categorias" :key="categoria.id">
-        {{ categoria.nome }}
-      </div>
-    </div>
+    <MenuCadastroOpcoes :ver-horizontal="true" style="justify-content: center;" />
   </section>
 </template>
 
 <script setup lang="ts">
 import { userManager } from '@/auth';
-import { onMounted, ref } from 'vue';
-import type ICategoria  from '@/interfaces/cadastro/ICategoria';
-import { obterCategorias } from '@/http/cadastro';
+import { defineComponent, onMounted, ref } from 'vue';
+import MenuCadastroOpcoes from '@/components/MenuCadastroOpcoes.vue';
 
 const usuarioNome = ref('');
-const categorias = ref([] as ICategoria[]);
+
+defineComponent({
+  components: {
+    MenuCadastroOpcoes,
+  },
+});
 
 onMounted(async () => {
   const user = await userManager.getUser();
   usuarioNome.value = user?.profile.name || '<anonimo>';
-
-  await buscarCategorias();
 });
-
-async function buscarCategorias() {
-  try {
-    const paginaRetornada = await obterCategorias();
-    categorias.value = paginaRetornada.content;
-  }
-  catch (error) {
-    console.error('Erro ao obter categorias:', error);
-  }
-}
 </script>
 
 <style lang="css" scoped>
@@ -45,5 +37,12 @@ section {
   margin-top: 2rem;
   text-align: center;
   margin-bottom: 15rem;
+}
+.card {
+  max-width: 600px;
+  margin: 2rem auto;
+  text-align: left;
+  color: whitesmoke;
+  font-size: 1.2em;
 }
 </style>
