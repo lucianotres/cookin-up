@@ -1,7 +1,7 @@
 <template>
   <main class="conteudo-principal">
     <section>
-      <h4>Área Administrativa</h4>
+      <h1>Área Administrativa</h1>
       <p>Bem-vindo {{ usuarioNome }} à área segura do aplicativo!</p>
 
       <q-card class="card" dark>
