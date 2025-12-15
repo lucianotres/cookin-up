@@ -7,7 +7,7 @@
       <q-table
         class="tabelaDados"
         :columns="colunas"
-        :rows="dadosAtuais"
+        :rows="storeCategorias.conteudoPaginaAtual"
         v-model:pagination="paginacao"
         :loading="storeCategorias.carregando"
         @request="onRequest"
@@ -60,10 +60,9 @@ section {
 </style>
 
 <script setup lang="ts">
-import type ICategoria from '@/interfaces/cadastro/ICategoria';
 import { useCategoriasStore } from '@/store/cadastro/categorias';
 import { evaEditOutline, evaPlusOutline, evaTrashOutline } from '@quasar/extras/eva-icons';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 const storeCategorias = useCategoriasStore();
 
@@ -74,39 +73,25 @@ const colunas = [
   { name: 'acoes', label: 'Ações', field: 'acoes', align: 'center' }
 ];
 
-const paginacao = ref({
-  sortBy: 'nome',
-  descending: false,
-  page: 1,
-  rowsPerPage: 50,
-  rowsNumber: 12
-})
-
-const dadosAtuais = ref([] as ICategoria[]);
+const paginacao = computed(() => {
+  return {
+    sortBy: storeCategorias.ordenarPor.length > 0 ? storeCategorias.ordenarPor[0].campo : '',
+    descending: storeCategorias.ordenarPor.length > 0 ? storeCategorias.ordenarPor[0].decrescente : false,
+    page: storeCategorias.paginaAtual,
+    rowsPerPage: storeCategorias.tamanhoPagina,
+    rowsNumber: storeCategorias.tamanhoTotal
+  };
+});
 
 onMounted(async () => {
-  await BuscaDados(1);
+  await storeCategorias.fetchCategorias(1, []);
 });
 
 const onRequest = async (props) => {
-  await BuscaDados(props.pagination.page);
-}
-
-async function BuscaDados(pagina: number)
-{
-  const paginaIndex = await storeCategorias.fetchCategorias(pagina - 1);
-
-  if (paginaIndex >= 0) {
-    const paginaDados = storeCategorias.paginas[paginaIndex];
-
-    dadosAtuais.value = paginaDados.content;
-    paginacao.value.rowsNumber = paginaDados.totalElements;
-    paginacao.value.page = pagina;
-  } else {
-    dadosAtuais.value = [];
-    paginacao.value.rowsNumber = 0;
-    paginacao.value.page = 1;
-  }
+  await storeCategorias.fetchCategorias(props.pagination.page, [{
+    campo: props.pagination.sortBy,
+    decrescente: props.pagination.descending
+   }]);
 }
 
 const addRow = () => {

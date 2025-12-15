@@ -1,4 +1,5 @@
 import { userManager } from "@/auth";
+import type IOrdem from "@/interfaces/IOrdem";
 import type IPage from "@/interfaces/IPage";
 import type ICategoria from "@/interfaces/cadastro/ICategoria";
 
@@ -18,7 +19,17 @@ export async function apiFetch(input: RequestInfo, init?: RequestInit) {
   });
 }
 
-export async function obterCategorias(page: number = 0, size: number = 200): Promise<IPage<ICategoria>> {
-  const resposta = await apiFetch(`${API_BASE_URL}categorias?page=${page}&size=${size}`);
+export async function obterCategorias(page: number = 0, size: number = 200, ordem: IOrdem[] = []): Promise<IPage<ICategoria>> {
+
+  let uri = `${API_BASE_URL}categorias?page=${page}&size=${size}`;
+
+  if (ordem.length > 0)
+  {
+    uri += ordem.map((o) => {
+      return o.decrescente ? `&sort=${o.campo},desc` : `&sort=${o.campo}`;
+    })
+  }
+
+  const resposta = await apiFetch(uri);
   return await resposta.json() as IPage<ICategoria>;
 }
