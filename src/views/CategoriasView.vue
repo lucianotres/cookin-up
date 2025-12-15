@@ -21,7 +21,7 @@
           Nenhuma categoria cadastrada.
         </template>
         <template v-slot:top-right>
-          <q-btn color="primary" label="Adicionar" :icon-right="evaPlusOutline" @click="addRow" />
+          <q-btn color="primary" label="Adicionar" :icon-right="evaPlusOutline" @click="novo" />
         </template>
         <template v-slot:body-cell-acoes="props">
           <q-td :props="props">
@@ -30,7 +30,7 @@
               round
               color="primary"
               :icon="evaEditOutline"
-              @click="editRow(props.row)"
+              @click="editar(props.row)"
             />
             <q-btn
               flat
@@ -44,6 +44,8 @@
       </q-table>
     </section>
   </main>
+
+  <CadCategoriaDialog v-model="verCadastro" :id-categoria="verCadastroId" />
 </template>
 
 <style lang="css" scoped>
@@ -60,6 +62,8 @@ section {
 </style>
 
 <script setup lang="ts">
+import CadCategoriaDialog from '@/components/cadastro/CadCategoriaDialog.vue';
+import type ICategoria from '@/interfaces/cadastro/ICategoria';
 import { useCategoriasStore } from '@/store/cadastro/categorias';
 import { evaEditOutline, evaPlusOutline, evaTrashOutline } from '@quasar/extras/eva-icons';
 import { computed, onMounted, ref } from 'vue';
@@ -94,12 +98,21 @@ const onRequest = async (props) => {
    }]);
 }
 
-const addRow = () => {
-  console.log('Adicionar:')
+const verCadastro = ref(false);
+const verCadastroId = ref(0);
+
+function abrirCadastro(id: number)
+{
+  verCadastroId.value = id;
+  verCadastro.value = true;
 }
 
-const editRow = (row) => {
-  console.log('Editar:', row)
+const novo = () => {
+  abrirCadastro(0);
+}
+
+const editar = (linha: ICategoria) => {
+  abrirCadastro(linha.id);
 }
 
 const deleteRow = (row) => {

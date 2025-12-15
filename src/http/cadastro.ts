@@ -33,3 +33,8 @@ export async function obterCategorias(page: number = 0, size: number = 200, orde
   const resposta = await apiFetch(uri);
   return await resposta.json() as IPage<ICategoria>;
 }
+
+export async function obterCategoria(id: number): Promise<ICategoria> {
+  const resposta = await apiFetch(`${API_BASE_URL}categorias/${id}`);
+  return await resposta.json() as ICategoria;
+}
