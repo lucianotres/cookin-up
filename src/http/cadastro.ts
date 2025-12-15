@@ -18,7 +18,7 @@ export async function apiFetch(input: RequestInfo, init?: RequestInit) {
   });
 }
 
-export async function obterCategorias() {
-  const resposta = await apiFetch(`${API_BASE_URL}categorias`);
+export async function obterCategorias(page: number = 0, size: number = 200): Promise<IPage<ICategoria>> {
+  const resposta = await apiFetch(`${API_BASE_URL}categorias?page=${page}&size=${size}`);
   return await resposta.json() as IPage<ICategoria>;
 }

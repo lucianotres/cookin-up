@@ -6,6 +6,7 @@ import router from './router'
 import { createPinia } from 'pinia'
 
 import { Quasar } from 'quasar'
+import quasarIconSet from 'quasar/icon-set/material-icons-outlined'
 import quasarLang from 'quasar/lang/pt-BR'
 // Import icon libraries
 import '@quasar/extras/material-icons-outlined/material-icons-outlined.css'
@@ -21,5 +22,6 @@ createApp(App)
   .use(Quasar, {
     plugins: {},
     lang: quasarLang,
+    iconSet: quasarIconSet
   })
   .mount('#app')
