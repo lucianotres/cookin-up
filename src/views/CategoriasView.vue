@@ -45,7 +45,11 @@
     </section>
   </main>
 
-  <CadCategoriaDialog v-model="verCadastro" :id-categoria="verCadastroId" />
+  <CadCategoriaDialog
+    v-model="verCadastro"
+    :id-categoria="verCadastroId"
+    @salvou="aoSalvar"
+    @incluso="aoIncluir" />
 </template>
 
 <style lang="css" scoped>
@@ -117,5 +121,12 @@ const editar = (linha: ICategoria) => {
 
 const deleteRow = (row) => {
   console.log('Excluir:', row)
+}
+
+const aoSalvar = (novaCategoria: ICategoria) => {
+  storeCategorias.atualizaCategoria(novaCategoria);
+}
+const aoIncluir = (novaCategoria: ICategoria) => {
+  storeCategorias.incluiCategoria(novaCategoria);
 }
 </script>

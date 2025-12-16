@@ -38,3 +38,27 @@ export async function obterCategoria(id: number): Promise<ICategoria> {
   const resposta = await apiFetch(`${API_BASE_URL}categorias/${id}`);
   return await resposta.json() as ICategoria;
 }
+
+export async function atualizarCategoria(categoria: ICategoria): Promise<ICategoria> {
+  const resposta = await apiFetch(`${API_BASE_URL}categorias`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(categoria)
+  });
+
+  return await resposta.json() as ICategoria;
+}
+
+export async function incluirCategoria(categoria: ICategoria): Promise<ICategoria> {
+  const resposta = await apiFetch(`${API_BASE_URL}categorias`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(categoria)
+  });
+
+  return await resposta.json() as ICategoria;
+}

@@ -35,9 +35,9 @@ export const useCategoriasStore = defineStore('cadCategorias', {
     },
 
     actions: {
-      async fetchCategorias(pagina: number, ordem: IOrdem[]): Promise<void> {
-        //se mudou ordenação, zera dados em cache
-        if (!ordensSaoIguais(this.ordenarPor, ordem)) {
+      async fetchCategorias(pagina: number, ordem: IOrdem[], forcaReload: boolean = false): Promise<void> {
+        //força reload ou se mudou ordenação, zera dados em cache
+        if (forcaReload || !ordensSaoIguais(this.ordenarPor, ordem)) {
           this.paginaAtual = 1;
           this.ordenarPor = ordem;
           this.tamanhoTotal = 0;
@@ -72,6 +72,29 @@ export const useCategoriasStore = defineStore('cadCategorias', {
         } finally {
           this.carregando = false;
         }
+      },
+
+      atualizaCategoria(novaCategoria: ICategoria) {
+        const paginaComACategoria = this.paginas.find(p => p.content.findIndex(f => f.id === novaCategoria.id) >= 0);
+
+        if (paginaComACategoria) {
+          const novaLista = paginaComACategoria.content.map(m => m.id === novaCategoria.id ? novaCategoria : m);
+          paginaComACategoria.content = novaLista;
+        }
+      },
+
+      incluiCategoria(novaCategoria: ICategoria) {
+        const conteudoAtual = this.conteudoPaginaAtual;
+
+        if (conteudoAtual.length === 0 || conteudoAtual.length === this.tamanhoPagina)
+        {
+          this.fetchCategorias(this.paginaAtual, this.ordenarPor, true)
+          return;
+        }
+
+        const pagina = this.paginas.find(f => f.pageable.pageNumber === (this.paginaAtual - 1));
+        if (pagina)
+          pagina.content = [novaCategoria, ...pagina.content];
       }
     }
 });
