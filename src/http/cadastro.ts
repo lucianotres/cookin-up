@@ -62,3 +62,14 @@ export async function incluirCategoria(categoria: ICategoria): Promise<ICategori
 
   return await resposta.json() as ICategoria;
 }
+
+export async function removerCategoria(idCategoria: number): Promise<boolean> {
+  const resposta = await apiFetch(`${API_BASE_URL}categorias/${idCategoria}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  return resposta.ok && resposta.status === 204;
+}

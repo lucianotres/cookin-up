@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import type ICategoria from '@/interfaces/cadastro/ICategoria';
-import { obterCategorias } from '@/http/cadastro';
+import { obterCategorias, removerCategoria } from '@/http/cadastro';
 import type IPage from '@/interfaces/IPage';
 import type IOrdem from '@/interfaces/IOrdem';
 
@@ -95,6 +95,15 @@ export const useCategoriasStore = defineStore('cadCategorias', {
         const pagina = this.paginas.find(f => f.pageable.pageNumber === (this.paginaAtual - 1));
         if (pagina)
           pagina.content = [novaCategoria, ...pagina.content];
+      },
+
+      async removerCategoria(idCategoria: number): Promise<boolean> {
+        if (await removerCategoria(idCategoria))
+        {
+          await this.fetchCategorias(this.paginaAtual, this.ordenarPor, true);
+          return true;
+        } else
+          return false;
       }
     }
 });

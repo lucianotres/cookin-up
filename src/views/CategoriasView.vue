@@ -37,7 +37,7 @@
               round
               color="negative"
               :icon="evaTrashOutline"
-              @click="deleteRow(props.row)"
+              @click="excluir(props.row)"
             />
           </q-td>
         </template>
@@ -67,10 +67,11 @@ section {
 
 <script setup lang="ts">
 import CadCategoriaDialog from '@/components/cadastro/CadCategoriaDialog.vue';
+import type { IDialogoQuestaoData } from '@/components/DialogoQuestao.vue';
 import type ICategoria from '@/interfaces/cadastro/ICategoria';
 import { useCategoriasStore } from '@/store/cadastro/categorias';
 import { evaEditOutline, evaPlusOutline, evaTrashOutline } from '@quasar/extras/eva-icons';
-import { computed, onMounted, ref } from 'vue';
+import { computed, inject, onMounted, ref } from 'vue';
 
 const storeCategorias = useCategoriasStore();
 
@@ -104,6 +105,7 @@ const onRequest = async (props) => {
 
 const verCadastro = ref(false);
 const verCadastroId = ref(0);
+const mostrarQuestao = inject<(a: IDialogoQuestaoData) => void>('mostrarQuestao');
 
 function abrirCadastro(id: number)
 {
@@ -119,8 +121,21 @@ const editar = (linha: ICategoria) => {
   abrirCadastro(linha.id);
 }
 
-const deleteRow = (row) => {
-  console.log('Excluir:', row)
+const excluir = (linha: ICategoria) => {
+  if (!mostrarQuestao)
+    return;
+
+  mostrarQuestao({
+    titulo: 'Cadastro de Categoria',
+    mensagem: `Confirma exclusão da categoria "${linha.nome}"?`,
+    tipoSimNao: true,
+    aoCancelear: () => {},
+    aoConfirmar: () => fazExclusao(linha)
+  });
+}
+
+async function fazExclusao(linha: ICategoria): Promise<boolean> {
+  return await storeCategorias.removerCategoria(linha.id);
 }
 
 const aoSalvar = (novaCategoria: ICategoria) => {
