@@ -1,4 +1,6 @@
 #!/bin/sh
+
+###### CARREGA AS VARIAVES DE AMBIENTE PARA CFG
 CONFIG_FILE=${APP_CONFIG_FILE:-/usr/share/nginx/html/env-config.js}
 
 echo "window.__APP_CONFIG__ = {" > "$CONFIG_FILE"
@@ -13,5 +15,9 @@ done
 echo "};" >> "$CONFIG_FILE"
 echo "Arquivo de config env-config.js criado."
 
-#Roda app
+###### TROCA O BASE HREF NO INDEX
+BASE_URL=${APP_BASE_URL:-/}
+sed -i "s|<base href=\"/\">|<base href=\"${BASE_URL}\">|" /usr/share/nginx/html/index.html
+
+###### RODA O APP
 exec nginx -g 'daemon off;'
