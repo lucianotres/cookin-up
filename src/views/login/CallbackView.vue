@@ -3,15 +3,23 @@
 </template>
 
 <script setup lang="ts">
-import { userManager } from '@/auth';
+import { userManager, type LoginState } from '@/auth';
+import { useEnvConfig } from '@/utils/env-config';
 import { onMounted } from 'vue';
 
 onMounted(async () => {
   await userManager.signinRedirectCallback();
   const user = await userManager.getUser();
-  if (user) {
-    // Redireciona para rota segura
-    window.location.href = "/seguro";
+  const state = user?.state as LoginState | undefined;
+
+  const env = useEnvConfig();
+  let base = env.APP_BASE_URL || '';
+  base = base.replace(/\/$/, "");
+
+  if (state?.returnUrl) {
+    window.location.href = base + state.returnUrl;
+  } else {
+    window.location.href = base + "/seguro";
   }
 });
 

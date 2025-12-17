@@ -15,3 +15,7 @@ const oidcConfig = {
 };
 
 export const userManager = new UserManager(oidcConfig);
+
+export interface LoginState {
+  returnUrl: string;
+}
