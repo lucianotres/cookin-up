@@ -60,7 +60,11 @@ export const useCategoriasStore = defineStore('cadCategorias', {
         this.falhaAoCarregar = false;
         this.erroAoCarregar = '';
         try {
-          var paginaRetornada = await obterCategorias(pagina - 1, this.tamanhoPagina, ordem);
+          var paginaRetornada = await obterCategorias({
+            page: pagina - 1,
+            size: this.tamanhoPagina,
+            sort: ordem
+          });
 
           this.paginas.push(paginaRetornada);
           this.paginaAtual = pagina;
