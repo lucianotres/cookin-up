@@ -23,7 +23,9 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copia apenas os arquivos compilados
 COPY --from=build-stage /app/dist /usr/share/nginx/html
+
 COPY --from=build-stage /app/docker-entrypoint.sh .
+RUN chmod +x docker-entrypoint.sh
 
 EXPOSE 80
 ENTRYPOINT ["/docker-entrypoint.sh"]
