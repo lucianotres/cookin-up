@@ -44,7 +44,7 @@ const categoria = ref({
   nome: '',
 } as ICategoria);
 
-const validaNome = [valor => !!valor || 'Obrigatório informar um nome'];
+const validaNome = [(valor: string) => !!valor || 'Obrigatório informar um nome'];
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },

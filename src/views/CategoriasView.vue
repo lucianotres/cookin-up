@@ -76,10 +76,10 @@ import { computed, inject, onMounted, ref } from 'vue';
 const storeCategorias = useCategoriasStore();
 
 const colunas = [
-  { name: 'id', label: 'ID', field: 'id', align: 'left', sortable: true },
-  { name: 'nome', label: 'Nome', field: 'nome', align: 'left', sortable: true },
-  { name: 'imagem', label: 'Imagem', field: 'imagem', align: 'left', sortable: false },
-  { name: 'acoes', label: 'Ações', field: 'acoes', align: 'center' }
+  { name: 'id', label: 'ID', field: 'id', align: 'left' as const, sortable: true },
+  { name: 'nome', label: 'Nome', field: 'nome', align: 'left' as const, sortable: true },
+  { name: 'imagem', label: 'Imagem', field: 'imagem', align: 'left' as const, sortable: false },
+  { name: 'acoes', label: 'Ações', field: 'acoes', align: 'center' as const, sortable: false }
 ];
 
 const paginacao = computed(() => {
@@ -96,7 +96,7 @@ onMounted(async () => {
   await storeCategorias.fetchCategorias(1, []);
 });
 
-const onRequest = async (props) => {
+const onRequest = async (props: any) => {
   await storeCategorias.fetchCategorias(props.pagination.page, [{
     campo: props.pagination.sortBy,
     decrescente: props.pagination.descending
