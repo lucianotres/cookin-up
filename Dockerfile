@@ -13,7 +13,6 @@ COPY . .
 RUN npm version ${VERSION} --no-git-tag-version
 ENV VITE_APP_VERSION=${VERSION}
 
-ENV VITE_API_BASE_URL=api/
 RUN npm run build
 
 # Etapa 2: Produção
@@ -24,6 +23,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copia apenas os arquivos compilados
 COPY --from=build-stage /app/dist /usr/share/nginx/html
+COPY --from=build-stage /app/docker-entrypoint.sh .
 
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/docker-entrypoint.sh"]

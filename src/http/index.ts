@@ -1,7 +1,8 @@
 import type ICategorias from "@/interfaces/ICategorias";
 import type IReceita from "@/interfaces/IReceita";
+import { useEnvApiBaseUrl, useEnvConfig } from "@/utils/env-config";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = useEnvApiBaseUrl();
 
 export async function obterCategorias() {
   const resposta = await fetch(`${API_BASE_URL}publico/categorias`);

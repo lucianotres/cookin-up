@@ -2,8 +2,9 @@ import { userManager } from "@/auth";
 import type IOrdem from "@/interfaces/IOrdem";
 import type IPage from "@/interfaces/IPage";
 import type ICategoria from "@/interfaces/cadastro/ICategoria";
+import { useEnvApiBaseUrl } from "@/utils/env-config";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = useEnvApiBaseUrl();
 
 export async function apiFetch(input: RequestInfo, init?: RequestInit) {
   const user = await userManager.getUser();

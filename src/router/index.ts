@@ -5,6 +5,7 @@ import SeguroView from '@/views/SeguroView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import CategoriasView from '@/views/CategoriasView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
+import { useEnvConfig } from '@/utils/env-config'
 
 const routes = [
   { path: '/', component: HomeView },
@@ -24,8 +25,10 @@ const routes = [
   {path: '/:pathMatch(.*)*', component: NotFoundView }
 ]
 
+const env = useEnvConfig();
+
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(env.APP_BASE_URL || '/'),
   routes
 })
 

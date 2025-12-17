@@ -19,3 +19,7 @@ Thumbs.db
 # Git
 .git
 .gitignore
+
+# Ignorar arquivos de ambiente
+.env
+.env.*
