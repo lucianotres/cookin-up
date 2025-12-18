@@ -45,11 +45,11 @@
     </section>
   </main>
 
-  <!-- <CadIngredienteDialog
+  <CadReceitaDialog
     v-model="verCadastro"
-    :id-ingrediente="verCadastroId"
+    :id-receita="verCadastroId"
     @salvou="aoSalvar"
-    @incluso="aoIncluir" /> -->
+    @incluso="aoIncluir" />
 </template>
 
 <style lang="css" scoped>
@@ -66,6 +66,7 @@ section {
 </style>
 
 <script setup lang="ts">
+import CadReceitaDialog from '@/components/cadastro/CadReceitaDialog.vue';
 import type { IDialogoQuestaoData } from '@/components/DialogoQuestao.vue';
 import type { IReceita } from '@/interfaces/cadastro/IReceita';
 import { useReceitasStore } from '@/store/cadastro/receitas';

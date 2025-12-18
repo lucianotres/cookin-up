@@ -150,8 +150,19 @@ export const incluirIngrediente = async (ingrediente: IIngrediente): Promise<IIn
 export const removerIngrediente = async (id: number): Promise<boolean> =>
   fechDeletePadrao(`ingredientes/${id}`);
 
+// API para pegar lista de ingredientes filtrada
+export const obterIngredientesFiltrado = async (termo: string): Promise<IIngrediente[]> => {
+  const termoEncoded = encodeURIComponent(termo);
+  const resposta = await apiFetch(`${API_BASE_URL}ingredientes/filtrado?termo=${termoEncoded}`);
+  return await resposta.json() as IIngrediente[];
+}
+
 
 
 // API para listar receitas
 export const obterReceitas = async (paginacao: IPaginacaoOrdenacao): Promise<IPage<IReceita>> =>
   fechGetPagePadrao('receitas', paginacao);
+
+// API para pegar uma receita
+export const obterReceita = async (id: number): Promise<IReceita> =>
+  fechGetPadrao(`receitas/${id}`);
