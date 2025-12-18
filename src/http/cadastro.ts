@@ -4,6 +4,7 @@ import type IPage from "@/interfaces/IPage";
 import type ICategoria from "@/interfaces/cadastro/ICategoria";
 import type IIngrediente from "@/interfaces/cadastro/IIngrediente";
 import { useEnvApiBaseUrl } from "@/utils/env-config";
+import type IErro400 from "./IErro400";
 
 const API_BASE_URL = useEnvApiBaseUrl();
 
@@ -59,6 +60,16 @@ async function fechPostPadrao<T>(path: string, conteudo: T): Promise<T> {
     },
     body: JSON.stringify(conteudo)
   });
+
+  if (resposta.status === 400) {
+    const falha = await resposta.json() as IErro400;
+    throw new Error(falha.mensagem);
+  }
+
+  if (resposta.status !== 201) {
+    throw new Error("Falha desconhecida ao salvar!");
+  }
+
   return await resposta.json() as T;
 }
 
