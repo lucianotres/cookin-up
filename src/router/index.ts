@@ -7,6 +7,7 @@ import CategoriasView from '@/views/CategoriasView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import { useEnvConfig } from '@/utils/env-config'
 import IngredientesView from '@/views/IngredientesView.vue'
+import ReceitasView from '@/views/ReceitasView.vue'
 
 const routes = [
   { path: '/', component: HomeView },
@@ -27,6 +28,12 @@ const routes = [
     path: '/ingredientes',
     name: 'Ingredientes',
     component: IngredientesView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/receitas',
+    name: 'Receitas',
+    component: ReceitasView,
     meta: { requiresAuth: true },
   },
   {path: '/:pathMatch(.*)*', component: NotFoundView }

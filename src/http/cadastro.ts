@@ -5,6 +5,7 @@ import type ICategoria from "@/interfaces/cadastro/ICategoria";
 import type IIngrediente from "@/interfaces/cadastro/IIngrediente";
 import { useEnvApiBaseUrl } from "@/utils/env-config";
 import type IErro400 from "./IErro400";
+import type { IReceita } from "@/interfaces/cadastro/IReceita";
 
 const API_BASE_URL = useEnvApiBaseUrl();
 
@@ -148,3 +149,9 @@ export const incluirIngrediente = async (ingrediente: IIngrediente): Promise<IIn
 // API para deletar ingrediente
 export const removerIngrediente = async (id: number): Promise<boolean> =>
   fechDeletePadrao(`ingredientes/${id}`);
+
+
+
+// API para listar receitas
+export const obterReceitas = async (paginacao: IPaginacaoOrdenacao): Promise<IPage<IReceita>> =>
+  fechGetPagePadrao('receitas', paginacao);
