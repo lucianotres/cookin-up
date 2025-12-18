@@ -52,7 +52,7 @@ async function fechGetPadrao<T>(path: string): Promise<T> {
   return await resposta.json() as T;
 }
 
-async function fechPostPadrao<T>(path: string, conteudo: T): Promise<T> {
+async function fechPostPadrao<TRetorno, TPost>(path: string, conteudo: TPost): Promise<TRetorno> {
   const resposta = await apiFetch(`${API_BASE_URL}${path}`, {
     method: 'POST',
     headers: {
@@ -70,7 +70,7 @@ async function fechPostPadrao<T>(path: string, conteudo: T): Promise<T> {
     throw new Error("Falha desconhecida ao salvar!");
   }
 
-  return await resposta.json() as T;
+  return await resposta.json() as TRetorno;
 }
 
 async function fechPutPadrao<T>(path: string, conteudo: T): Promise<T> {
@@ -114,6 +114,13 @@ export const incluirCategoria = async (categoria: ICategoria): Promise<ICategori
 export const removerCategoria = async (id: number): Promise<boolean> =>
   fechDeletePadrao(`categorias/${id}`);
 
+// API para pegar lista de categoria filtradas
+export const obterCategoriasFiltrada = async (termo: string): Promise<ICategoria[]> => {
+  const termoEncoded = encodeURIComponent(termo);
+  const resposta = await apiFetch(`${API_BASE_URL}categorias/filtrado?termo=${termoEncoded}`);
+  return await resposta.json() as ICategoria[];
+}
+
 
 // API para listar ingredientes
 export const obterIngredientes = async (paginacao: IPaginacaoOrdenacao): Promise<IPage<IIngrediente>> =>
@@ -125,11 +132,18 @@ export const obterIngrediente = async (id: number): Promise<IIngrediente> =>
 
 // API para atualizar um ingrediente
 export const atualizarIngrediente = async (ingrediente: IIngrediente): Promise<IIngrediente> =>
-  fechPutPadrao('ingredientes', ingrediente);
+  fechPutPadrao('ingredientes', {
+    id: ingrediente.id,
+    nome: ingrediente.nome,
+    id_categoria: ingrediente.categoria?.id
+  });
 
 // API para inclur um ingrediente
 export const incluirIngrediente = async (ingrediente: IIngrediente): Promise<IIngrediente> =>
-  fechPostPadrao('ingredientes', ingrediente);
+  fechPostPadrao('ingredientes', {
+    nome: ingrediente.nome,
+    id_categoria: ingrediente.categoria?.id
+  });
 
 // API para deletar ingrediente
 export const removerIngrediente = async (id: number): Promise<boolean> =>

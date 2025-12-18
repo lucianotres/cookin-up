@@ -9,7 +9,25 @@
         <div class="q-pa-md">
           <q-form ref="formulario" class="q-gutter-md" style="min-width: 400px">
             <q-input v-model="ingrediente.nome" :rules="validaNome" ref="primeiroInput" outlined label="Nome" />
-            <!--<q-input v-model="ingrediente.categoria" outlined label="Imagem" />-->
+            <q-select
+              v-model="ingrediente.categoria"
+              :rules="validaCategoria"
+              outlined
+              label="Categoria"
+              use-input
+              clearable
+              :options="listaCategorias"
+              option-label="nome"
+              @filter="filtraCategoria"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    -- Categoria não encontrada -- (digite no mínimo 2 caracteres)
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </q-form>
         </div>
       </q-card-section>
@@ -30,7 +48,8 @@
 </template>
 
 <script setup lang="ts">
-import { atualizarIngrediente, incluirIngrediente, obterIngrediente } from '@/http/cadastro';
+import { atualizarIngrediente, incluirIngrediente, obterCategoriasFiltrada, obterIngrediente } from '@/http/cadastro';
+import type ICategoria from '@/interfaces/cadastro/ICategoria';
 import type IIngrediente from '@/interfaces/cadastro/IIngrediente';
 import { evaCloseOutline, evaSaveOutline } from '@quasar/extras/eva-icons';
 import { Notify } from 'quasar';
@@ -46,6 +65,7 @@ const ingrediente = ref({
 } as IIngrediente);
 
 const validaNome = [(valor: string) => !!valor || 'Obrigatório informar um nome'];
+const validaCategoria = [(valor: ICategoria | null) => !!valor || 'Obrigatório informar uma categoria'];
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -118,5 +138,20 @@ const salvar = async () => {
   finally {
     carregando.value = false;
   }
+}
+
+const listaCategorias = ref([] as ICategoria[]);
+
+const filtraCategoria = async (
+  val: string,
+  update: (callback: () => void, after?: () => void) => void,
+  abort: () => void
+) => {
+  if (val.length < 2) {
+    update(() => listaCategorias.value = []);
+    return;
+  }
+  const categoriasFiltradas = await obterCategoriasFiltrada(val);
+  update(() => listaCategorias.value = categoriasFiltradas);
 }
 </script>
