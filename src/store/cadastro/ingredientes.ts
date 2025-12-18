@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia';
-import type ICategoria from '@/interfaces/cadastro/ICategoria';
-import { obterCategorias, removerCategoria } from '@/http/cadastro';
+import { obterIngredientes, removerIngrediente } from '@/http/cadastro';
 import type IPage from '@/interfaces/IPage';
 import type IOrdem from '@/interfaces/IOrdem';
+import type IIngrediente from '@/interfaces/cadastro/IIngrediente';
 import { ordensSaoIguais } from '@/utils/listas';
 
-export const useCategoriasStore = defineStore('cadCategorias', {
+export const useIngredientesStore = defineStore('cadIngredientes', {
     state: () => ({
-      paginas: [] as IPage<ICategoria>[],
+      paginas: [] as IPage<IIngrediente>[],
       tamanhoPagina: 50,
       tamanhoTotal: 0,
       paginaAtual: 1,
@@ -20,12 +20,12 @@ export const useCategoriasStore = defineStore('cadCategorias', {
     getters: {
       conteudoPaginaAtual: (state) => {
         const indicePagina = state.paginas.findIndex(p => p.pageable.pageNumber === (state.paginaAtual - 1));
-        return indicePagina >= 0 ? state.paginas[indicePagina].content : [] as ICategoria[];
+        return indicePagina >= 0 ? state.paginas[indicePagina].content : [] as IIngrediente[];
       }
     },
 
     actions: {
-      async fetchCategorias(pagina: number, ordem: IOrdem[], forcaReload: boolean = false): Promise<void> {
+      async fetchIngredientes(pagina: number, ordem: IOrdem[], forcaReload: boolean = false): Promise<void> {
         //força reload ou se mudou ordenação, zera dados em cache
         if (forcaReload || !ordensSaoIguais(this.ordenarPor, ordem)) {
           this.paginaAtual = 1;
@@ -50,7 +50,7 @@ export const useCategoriasStore = defineStore('cadCategorias', {
         this.falhaAoCarregar = false;
         this.erroAoCarregar = '';
         try {
-          var paginaRetornada = await obterCategorias({
+          var paginaRetornada = await obterIngredientes({
             page: pagina - 1,
             size: this.tamanhoPagina,
             sort: ordem
@@ -62,39 +62,39 @@ export const useCategoriasStore = defineStore('cadCategorias', {
           this.tamanhoTotal = paginaRetornada.totalElements;
         } catch (error: any) {
           this.falhaAoCarregar = true;
-          this.erroAoCarregar = error.message || 'Erro desconhecido ao carregar categorias.';
+          this.erroAoCarregar = error.message || 'Erro desconhecido ao carregar ingredientes.';
         } finally {
           this.carregando = false;
         }
       },
 
-      atualizaCategoria(novaCategoria: ICategoria) {
-        const paginaComACategoria = this.paginas.find(p => p.content.findIndex(f => f.id === novaCategoria.id) >= 0);
+      atualizaIngrediente(novoIngrediente: IIngrediente) {
+        const paginaCom = this.paginas.find(p => p.content.findIndex(f => f.id === novoIngrediente.id) >= 0);
 
-        if (paginaComACategoria) {
-          const novaLista = paginaComACategoria.content.map(m => m.id === novaCategoria.id ? novaCategoria : m);
-          paginaComACategoria.content = novaLista;
+        if (paginaCom) {
+          const novaLista = paginaCom.content.map(m => m.id === novoIngrediente.id ? novoIngrediente : m);
+          paginaCom.content = novaLista;
         }
       },
 
-      incluiCategoria(novaCategoria: ICategoria) {
+      incluiIngrediente(novoIngrediente: IIngrediente) {
         const conteudoAtual = this.conteudoPaginaAtual;
 
         if (conteudoAtual.length === 0 || conteudoAtual.length === this.tamanhoPagina)
         {
-          this.fetchCategorias(this.paginaAtual, this.ordenarPor, true)
+          this.fetchIngredientes(this.paginaAtual, this.ordenarPor, true)
           return;
         }
 
         const pagina = this.paginas.find(f => f.pageable.pageNumber === (this.paginaAtual - 1));
         if (pagina)
-          pagina.content = [novaCategoria, ...pagina.content];
+          pagina.content = [novoIngrediente, ...pagina.content];
       },
 
-      async removerCategoria(idCategoria: number): Promise<boolean> {
-        if (await removerCategoria(idCategoria))
+      async removerIngrediente(id: number): Promise<boolean> {
+        if (await removerIngrediente(id))
         {
-          await this.fetchCategorias(this.paginaAtual, this.ordenarPor, true);
+          await this.fetchIngredientes(this.paginaAtual, this.ordenarPor, true);
           return true;
         } else
           return false;

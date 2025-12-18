@@ -6,6 +6,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import CategoriasView from '@/views/CategoriasView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import { useEnvConfig } from '@/utils/env-config'
+import IngredientesView from '@/views/IngredientesView.vue'
 
 const routes = [
   { path: '/', component: HomeView },
@@ -20,6 +21,12 @@ const routes = [
     path: '/categorias',
     name: 'Categorias',
     component: CategoriasView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/ingredientes',
+    name: 'Ingredientes',
+    component: IngredientesView,
     meta: { requiresAuth: true },
   },
   {path: '/:pathMatch(.*)*', component: NotFoundView }
