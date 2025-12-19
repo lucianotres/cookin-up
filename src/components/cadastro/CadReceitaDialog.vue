@@ -32,6 +32,7 @@
                 </q-item>
               </template>
             </q-select>
+            <q-input v-model="receita.imagem" outlined label="Imagem" />
           </q-form>
         </div>
       </q-card-section>
@@ -52,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { obterIngredientesFiltrado, obterReceita } from '@/http/cadastro';
+import { atualizarReceita, incluirReceita, obterIngredientesFiltrado, obterReceita } from '@/http/cadastro';
 import type IIngrediente from '@/interfaces/cadastro/IIngrediente';
 import type { IReceita } from '@/interfaces/cadastro/IReceita';
 import { evaCloseOutline, evaSaveOutline } from '@quasar/extras/eva-icons';
@@ -118,34 +119,32 @@ const salvar = async () => {
   if (!(await formulario.value.validate()))
     return;
 
-  console.log(receita.value);
+  carregando.value = true;
+  try {
+    if (props.idReceita === 0) {
+      const dadosIncluso = await incluirReceita(receita.value);
+      emit('incluso', dadosIncluso);
+      mostrar.value = false;
+    } else {
+      const dadosAlterado = await atualizarReceita(receita.value);
+      emit('salvou', dadosAlterado);
+      mostrar.value = false;
+    }
+  }
+  catch (err) {
+    const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+    Notify.create({
+      message: '<b>Falha ao salvar!</b><br>' + errorMessage,
+      html: true,
+      color: 'red',
+      position: 'top',
+      timeout: 5000
+    });
 
-  // carregando.value = true;
-  // try {
-  //   if (props.idIngrediente === 0) {
-  //     const dadosAlterado = await incluirIngrediente(receita.value);
-  //     emit('incluso', dadosAlterado);
-  //     mostrar.value = false;
-  //   } else {
-  //     const dadosAlterado = await atualizarIngrediente(receita.value);
-  //     emit('salvou', dadosAlterado);
-  //     mostrar.value = false;
-  //   }
-  // }
-  // catch (err) {
-  //   const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-  //   Notify.create({
-  //     message: '<b>Falha ao salvar!</b><br>' + errorMessage,
-  //     html: true,
-  //     color: 'red',
-  //     position: 'top',
-  //     timeout: 5000
-  //   });
-
-  // }
-  // finally {
-  //   carregando.value = false;
-  // }
+  }
+  finally {
+    carregando.value = false;
+  }
 }
 
 const listaIngredientes = ref([] as IIngrediente[]);

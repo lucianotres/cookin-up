@@ -166,3 +166,15 @@ export const obterReceitas = async (paginacao: IPaginacaoOrdenacao): Promise<IPa
 // API para pegar uma receita
 export const obterReceita = async (id: number): Promise<IReceita> =>
   fechGetPadrao(`receitas/${id}`);
+
+// API para atualizar uma receita
+export const atualizarReceita = async (receita: IReceita): Promise<IReceita> =>
+  fechPutPadrao('receitas', receita);
+
+// API para inclur uma nova receita
+export const incluirReceita = async (receita: IReceita): Promise<IReceita> =>
+  fechPostPadrao('receitas', receita);
+
+// API para deletar receita
+export const removerReceita = async (id: number): Promise<boolean> =>
+  fechDeletePadrao(`receitas/${id}`);

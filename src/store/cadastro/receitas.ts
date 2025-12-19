@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { obterReceitas } from '@/http/cadastro';
+import { obterReceitas, removerReceita } from '@/http/cadastro';
 import type IPage from '@/interfaces/IPage';
 import type IOrdem from '@/interfaces/IOrdem';
 import { ordensSaoIguais } from '@/utils/listas';
@@ -69,36 +69,36 @@ export const useReceitasStore = defineStore('cadReceitas', {
       },
 
 
-      // atualizaIngrediente(novoIngrediente: IIngrediente) {
-      //   const paginaCom = this.paginas.find(p => p.content.findIndex(f => f.id === novoIngrediente.id) >= 0);
+      atualizaReceita(novaReceita: IReceita) {
+        const paginaCom = this.paginas.find(p => p.content.findIndex(f => f.id === novaReceita.id) >= 0);
 
-      //   if (paginaCom) {
-      //     const novaLista = paginaCom.content.map(m => m.id === novoIngrediente.id ? novoIngrediente : m);
-      //     paginaCom.content = novaLista;
-      //   }
-      // },
+        if (paginaCom) {
+          const novaLista = paginaCom.content.map(m => m.id === novaReceita.id ? novaReceita : m);
+          paginaCom.content = novaLista;
+        }
+      },
 
-      // incluiIngrediente(novoIngrediente: IIngrediente) {
-      //   const conteudoAtual = this.conteudoPaginaAtual;
+      incluiReceita(novaReceita: IReceita) {
+        const conteudoAtual = this.conteudoPaginaAtual;
 
-      //   if (conteudoAtual.length === 0 || conteudoAtual.length === this.tamanhoPagina)
-      //   {
-      //     this.fetchIngredientes(this.paginaAtual, this.ordenarPor, true)
-      //     return;
-      //   }
+        if (conteudoAtual.length === 0 || conteudoAtual.length === this.tamanhoPagina)
+        {
+          this.fetchReceitas(this.paginaAtual, this.ordenarPor, true)
+          return;
+        }
 
-      //   const pagina = this.paginas.find(f => f.pageable.pageNumber === (this.paginaAtual - 1));
-      //   if (pagina)
-      //     pagina.content = [novoIngrediente, ...pagina.content];
-      // },
+        const pagina = this.paginas.find(f => f.pageable.pageNumber === (this.paginaAtual - 1));
+        if (pagina)
+          pagina.content = [novaReceita, ...pagina.content];
+      },
 
-      // async removerIngrediente(id: number): Promise<boolean> {
-      //   if (await removerIngrediente(id))
-      //   {
-      //     await this.fetchIngredientes(this.paginaAtual, this.ordenarPor, true);
-      //     return true;
-      //   } else
-      //     return false;
-      // }
+      async removerReceita(id: number): Promise<boolean> {
+        if (await removerReceita(id))
+        {
+          await this.fetchReceitas(this.paginaAtual, this.ordenarPor, true);
+          return true;
+        } else
+          return false;
+      }
     }
 });

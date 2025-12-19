@@ -150,13 +150,13 @@ const excluir = (linha: IReceita) => {
 }
 
 async function fazExclusao(linha: IReceita): Promise<boolean> {
-  return false; //await storeIngredientes.removerIngrediente(linha.id);
+  return await storeReceitas.removerReceita(linha.id);
 }
 
 const aoSalvar = (novaCategoria: IReceita) => {
-  //storeIngredientes.atualizaIngrediente(novaCategoria);
+  storeReceitas.atualizaReceita(novaCategoria);
 }
 const aoIncluir = (novaCategoria: IReceita) => {
-  //storeIngredientes.incluiIngrediente(novaCategoria);
+  storeReceitas.incluiReceita(novaCategoria);
 }
 </script>
