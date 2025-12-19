@@ -1,64 +1,43 @@
 <template>
-  <q-dialog v-model="mostrar">
-    <q-card>
-      <q-card-section>
-        <div class="text-h2">{{ ingrediente.id === 0 ? 'Novo' : 'Editar' }} Ingrediente</div>
-      </q-card-section>
-
-      <q-card-section>
-        <div class="q-pa-md">
-          <q-form ref="formulario" class="q-gutter-md" style="min-width: 400px">
-            <q-input v-model="ingrediente.nome" :rules="validaNome" ref="primeiroInput" outlined label="Nome" />
-            <q-select
-              v-model="ingrediente.categoria"
-              :rules="validaCategoria"
-              outlined
-              label="Categoria"
-              use-input
-              clearable
-              :options="listaCategorias"
-              option-label="nome"
-              @filter="filtraCategoria"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    -- Categoria não encontrada -- (digite no mínimo 2 caracteres)
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </q-form>
-        </div>
-      </q-card-section>
-
-      <q-card-actions align="right">
-        <q-btn label="Salvar" color="primary" @click="salvar" :icon="evaSaveOutline" />
-        <q-btn label="Cancelar" color="amber" v-close-popup :icon="evaCloseOutline" />
-      </q-card-actions>
-
-      <q-inner-loading
-          :showing="carregando"
-          label="Carregando..."
-          label-class="text-teal"
-          label-style="font-size: 1.1em"
-        />
-    </q-card>
-  </q-dialog>
+  <CadPadrao
+    ref="dialogoCadastro"
+    :titulo="`Ingrediente (${props.modelValue === 0 ? 'novo' : 'editar'})`"
+    :buscar="buscaCadastro"
+    :salvar="salvarCadastro"
+    @fechar="() => emit('update:modelValue', null)"
+  >
+    <q-input v-model="ingrediente.nome" :rules="validaNome" outlined label="Nome" />
+    <q-select
+      v-model="ingrediente.categoria"
+      :rules="validaCategoria"
+      outlined
+      label="Categoria"
+      use-input
+      clearable
+      :options="listaCategorias"
+      option-label="nome"
+      @filter="filtraCategoria"
+    >
+      <template v-slot:no-option>
+        <q-item>
+          <q-item-section class="text-grey">
+            -- Categoria não encontrada -- (digite no mínimo 2 caracteres)
+          </q-item-section>
+        </q-item>
+      </template>
+    </q-select>
+  </CadPadrao>
 </template>
 
 <script setup lang="ts">
+import CadPadrao from './CadPadrao.vue';
 import { atualizarIngrediente, incluirIngrediente, obterCategoriasFiltrada, obterIngrediente } from '@/http/cadastro';
 import type ICategoria from '@/interfaces/cadastro/ICategoria';
 import type IIngrediente from '@/interfaces/cadastro/IIngrediente';
-import { evaCloseOutline, evaSaveOutline } from '@quasar/extras/eva-icons';
-import { Notify } from 'quasar';
-import { computed, nextTick, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
-const formulario = ref();
-const primeiroInput = ref();
+const dialogoCadastro = ref<InstanceType<typeof CadPadrao>>();
 
-const carregando = ref(true);
 const ingrediente = ref({
   id: 0,
   nome: '',
@@ -68,75 +47,41 @@ const validaNome = [(valor: string) => !!valor || 'Obrigatório informar um nome
 const validaCategoria = [(valor: ICategoria | null) => !!valor || 'Obrigatório informar uma categoria'];
 
 const props = defineProps({
-  modelValue: { type: Boolean, required: true },
-  idIngrediente: { type: Number, required: true }
+  modelValue: { type: [Number, null], required: true }
 })
 
 const emit = defineEmits(['update:modelValue', 'salvou', 'incluso'])
 
-const mostrar = computed({
-  get: () => props.modelValue,
-  set: (val: boolean) => emit('update:modelValue', val)
-})
-
 watch(() => props.modelValue, async (valor) => {
-  if (valor === true) {
-    await buscaCadastro();
-    await nextTick();
-    primeiroInput.value.focus();
-  }
+  if (valor === null)
+    dialogoCadastro.value?.fechar();
+  else
+    dialogoCadastro.value?.mostrar();
 });
 
 async function buscaCadastro() {
-  if (props.idIngrediente === 0) {
+  if (props.modelValue === null)
+    return;
+
+  if (props.modelValue === 0) {
     ingrediente.value = { id: 0, nome: '' };
-    carregando.value = false;
     return;
   }
 
-  carregando.value = true;
-  try {
-    var dadosCategoria = await obterIngrediente(props.idIngrediente);
-    ingrediente.value = dadosCategoria;
-  }
-  catch (err) {
-    console.log('Falha ao carregar ingrediente:', err);
-    mostrar.value = false;
-  }
-  finally {
-    carregando.value = false;
-  }
+  var dadosCategoria = await obterIngrediente(props.modelValue);
+  ingrediente.value = dadosCategoria;
 }
 
-const salvar = async () => {
-  if (!(await formulario.value.validate()))
+async function salvarCadastro() {
+  if (props.modelValue === null)
     return;
 
-  carregando.value = true;
-  try {
-    if (props.idIngrediente === 0) {
-      const dadosAlterado = await incluirIngrediente(ingrediente.value);
-      emit('incluso', dadosAlterado);
-      mostrar.value = false;
-    } else {
-      const dadosAlterado = await atualizarIngrediente(ingrediente.value);
-      emit('salvou', dadosAlterado);
-      mostrar.value = false;
-    }
-  }
-  catch (err) {
-    const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-    Notify.create({
-      message: '<b>Falha ao salvar!</b><br>' + errorMessage,
-      html: true,
-      color: 'red',
-      position: 'top',
-      timeout: 5000
-    });
-
-  }
-  finally {
-    carregando.value = false;
+  if (props.modelValue === 0) {
+    const dadoIncluso = await incluirIngrediente(ingrediente.value);
+    emit('incluso', dadoIncluso);
+  } else {
+    const dadosAlterado = await atualizarIngrediente(ingrediente.value);
+    emit('salvou', dadosAlterado);
   }
 }
 

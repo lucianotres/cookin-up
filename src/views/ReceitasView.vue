@@ -46,8 +46,7 @@
   </main>
 
   <CadReceitaDialog
-    v-model="verCadastro"
-    :id-receita="verCadastroId"
+    v-model="verCadastroId"
     @salvou="aoSalvar"
     @incluso="aoIncluir" />
 </template>
@@ -118,14 +117,12 @@ const onRequest = async (props: any) => {
    }]);
 }
 
-const verCadastro = ref(false);
-const verCadastroId = ref(0);
+const verCadastroId = ref(null as number | null);
 const mostrarQuestao = inject<(a: IDialogoQuestaoData) => void>('mostrarQuestao');
 
 function abrirCadastro(id: number)
 {
   verCadastroId.value = id;
-  verCadastro.value = true;
 }
 
 const novo = () => {
